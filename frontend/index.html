@@ -632,12 +632,268 @@
   }
   .toast.success { border-color: var(--green); color: var(--green); }
   .toast.error { border-color: var(--red); color: var(--red); }
+
+  /* ── AUTH MODAL ── */
+  .auth-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 10, 15, 0.92);
+    backdrop-filter: blur(8px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.2s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .auth-overlay.hidden { display: none; }
+
+  .auth-card {
+    background: var(--bg2);
+    border: 1px solid var(--border-bright);
+    border-radius: 10px;
+    padding: 40px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 0 80px rgba(0,212,255,0.08), 0 24px 64px rgba(0,0,0,0.6);
+    animation: slideUp 0.25s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  .auth-logo {
+    font-family: var(--display);
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--accent);
+    text-shadow: 0 0 40px rgba(0,212,255,0.4);
+    margin-bottom: 4px;
+  }
+  .auth-logo span { color: var(--accent2); }
+  .auth-tagline { font-size: 11px; color: var(--text-dim); margin-bottom: 28px; }
+
+  .auth-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+    gap: 0;
+  }
+  .auth-tab {
+    flex: 1;
+    padding: 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-bottom: -1px;
+  }
+  .auth-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .auth-form { display: flex; flex-direction: column; gap: 14px; }
+  .auth-form.hidden { display: none; }
+
+  .field-group { display: flex; flex-direction: column; gap: 5px; }
+  .field-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); }
+  .field-input {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text-bright);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 10px 12px;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field-input:focus { border-color: var(--accent); box-shadow: var(--glow); }
+  .field-input::placeholder { color: var(--text-dim); }
+
+  .auth-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-top: 4px;
+    position: relative;
+  }
+  .auth-btn:hover:not(:disabled) { background: #00b8d9; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,212,255,0.3); }
+  .auth-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .auth-btn.loading::after {
+    content: '';
+    position: absolute;
+    right: 14px; top: 50%;
+    transform: translateY(-50%);
+    width: 14px; height: 14px;
+    border: 2px solid rgba(0,0,0,0.3);
+    border-top-color: var(--bg);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+
+  .auth-error {
+    padding: 8px 12px;
+    background: rgba(255,61,87,0.1);
+    border: 1px solid rgba(255,61,87,0.3);
+    border-radius: 4px;
+    font-size: 11px;
+    color: var(--red);
+    display: none;
+  }
+  .auth-error.visible { display: block; }
+
+  .password-rules {
+    font-size: 10px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    padding: 8px 10px;
+    background: var(--bg3);
+    border-radius: 4px;
+  }
+
+  /* ── USER MENU (topbar) ── */
+  .user-menu {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+  }
+  .user-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(0,212,255,0.15);
+    border: 1px solid rgba(0,212,255,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .user-avatar:hover { background: rgba(0,212,255,0.25); box-shadow: var(--glow); }
+  .user-email { font-size: 10px; color: var(--text-dim); max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .user-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: var(--bg2);
+    border: 1px solid var(--border-bright);
+    border-radius: 6px;
+    min-width: 160px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    z-index: 500;
+    overflow: hidden;
+    display: none;
+  }
+  .user-dropdown.open { display: block; animation: slideUp 0.15s ease; }
+  .dd-item {
+    padding: 10px 14px;
+    font-size: 11px;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.1s;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    font-family: var(--mono);
+  }
+  .dd-item:hover { background: var(--bg3); color: var(--text-bright); }
+  .dd-item.danger:hover { color: var(--red); }
+  .dd-separator { height: 1px; background: var(--border); margin: 2px 0; }
+  .dd-user-info { padding: 10px 14px 8px; border-bottom: 1px solid var(--border); }
+  .dd-username { font-size: 12px; font-weight: 700; color: var(--text-bright); }
+  .dd-role { font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin-top: 2px; }
+
+  /* Rate limit indicator */
+  .rate-badge {
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    background: rgba(255,190,0,0.1);
+    border: 1px solid rgba(255,190,0,0.3);
+    color: var(--warn);
+    display: none;
+  }
+  .rate-badge.visible { display: inline-flex; align-items: center; gap: 4px; }
 </style>
 </head>
 <body>
 
+<!-- AUTH MODAL OVERLAY -->
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-card">
+    <div class="auth-logo">Quant<span>AI</span></div>
+    <div class="auth-tagline">Real-time market intelligence terminal</div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Sign In</button>
+      <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Create Account</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div class="auth-form" id="loginForm">
+      <div id="loginError" class="auth-error"></div>
+      <div class="field-group">
+        <label class="field-label">Email</label>
+        <input class="field-input" id="loginEmail" type="email" placeholder="you@example.com"
+               onkeydown="if(event.key==='Enter')submitLogin()" autocomplete="email" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Password</label>
+        <input class="field-input" id="loginPassword" type="password" placeholder="••••••••"
+               onkeydown="if(event.key==='Enter')submitLogin()" autocomplete="current-password" />
+      </div>
+      <button class="auth-btn" id="loginBtn" onclick="submitLogin()">▶ Sign In</button>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div class="auth-form hidden" id="registerForm">
+      <div id="registerError" class="auth-error"></div>
+      <div class="field-group">
+        <label class="field-label">Email</label>
+        <input class="field-input" id="regEmail" type="email" placeholder="you@example.com"
+               autocomplete="email" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Username</label>
+        <input class="field-input" id="regUsername" type="text" placeholder="trader_joe"
+               autocomplete="username" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Password</label>
+        <input class="field-input" id="regPassword" type="password" placeholder="Min 8 chars, 1 uppercase, 1 number"
+               autocomplete="new-password" />
+      </div>
+      <div class="password-rules">Password must be 8+ characters with at least one uppercase letter and one number.</div>
+      <button class="auth-btn" id="registerBtn" onclick="submitRegister()">◈ Create Account</button>
+    </div>
+  </div>
+</div>
+
 <!-- TOP BAR -->
-<div class="topbar">
+<div class="topbar" id="mainTopbar" style="display:none">
   <div class="logo">Quant<span>AI</span></div>
   <div class="ticker-tape">
     <div class="ticker-inner" id="tickerInner">
@@ -664,10 +920,28 @@
     <strong id="clock">--:--:--</strong>
     <span id="date-display">--</span>
   </div>
+  <div class="user-menu" id="userMenu" style="margin-left:16px">
+    <span class="rate-badge" id="rateBadge">⚡ Rate limited</span>
+    <div style="text-align:right">
+      <div class="user-email" id="userEmailDisplay"></div>
+    </div>
+    <div class="user-avatar" id="userAvatar" onclick="toggleUserDropdown()"></div>
+    <div class="user-dropdown" id="userDropdown">
+      <div class="dd-user-info">
+        <div class="dd-username" id="ddUsername"></div>
+        <div class="dd-role" id="ddRole"></div>
+      </div>
+      <button class="dd-item" onclick="showTab('market');closeDropdown()">◉ Market Overview</button>
+      <button class="dd-item" onclick="showTab('chat');closeDropdown()">◎ AI Chat</button>
+      <div class="dd-separator"></div>
+      <button class="dd-item danger" onclick="logout()">⏻ Sign Out</button>
+      <button class="dd-item danger" onclick="logoutAll()">⊗ Sign Out All Devices</button>
+    </div>
+  </div>
 </div>
 
 <!-- APP LAYOUT -->
-<div class="app">
+<div class="app" id="mainApp" style="display:none">
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
@@ -774,7 +1048,6 @@ const WATCHLIST_STOCKS = [
   { sym: 'MSFT', name: 'Microsoft', type: 'stock' },
   { sym: 'AMZN', name: 'Amazon', type: 'stock' },
 ];
-
 const WATCHLIST_CRYPTO = [
   { sym: 'bitcoin', name: 'Bitcoin', type: 'crypto' },
   { sym: 'ethereum', name: 'Ethereum', type: 'crypto' },
@@ -782,7 +1055,121 @@ const WATCHLIST_CRYPTO = [
   { sym: 'cardano', name: 'Cardano', type: 'crypto' },
 ];
 
-// State
+// ─────────────────────────────────────────────────────────────────────────────
+// AUTH TOKEN STORE
+// Tokens are stored in MEMORY only (not localStorage/sessionStorage).
+// This prevents XSS token theft via localStorage.
+// Trade-off: tokens lost on page refresh → user must re-login.
+// For persistent sessions, use httpOnly cookies (requires backend change).
+// ─────────────────────────────────────────────────────────────────────────────
+const TokenStore = (() => {
+  let _accessToken = null;
+  let _refreshToken = null;
+  let _user = null;            // { email, username, role }
+  let _refreshTimer = null;    // auto-refresh timer handle
+
+  const ACCESS_TTL_MS = 14 * 60 * 1000;  // 14 min (refresh before 15min expiry)
+
+  function set(accessToken, refreshToken, user) {
+    _accessToken = accessToken;
+    _refreshToken = refreshToken;
+    _user = user;
+    scheduleRefresh();
+  }
+
+  function clear() {
+    _accessToken = null;
+    _refreshToken = null;
+    _user = null;
+    if (_refreshTimer) clearTimeout(_refreshTimer);
+    _refreshTimer = null;
+  }
+
+  function getAccess() { return _accessToken; }
+  function getRefresh() { return _refreshToken; }
+  function getUser() { return _user; }
+  function isAuthenticated() { return !!_accessToken; }
+
+  function scheduleRefresh() {
+    if (_refreshTimer) clearTimeout(_refreshTimer);
+    _refreshTimer = setTimeout(async () => {
+      await silentRefresh();
+    }, ACCESS_TTL_MS);
+  }
+
+  async function silentRefresh() {
+    if (!_refreshToken) return;
+    try {
+      const res = await fetch(`${API_BASE}/auth/refresh`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refresh_token: _refreshToken }),
+      });
+      if (!res.ok) throw new Error('Refresh failed');
+      const data = await res.json();
+      _accessToken = data.access_token;
+      _refreshToken = data.refresh_token;
+      scheduleRefresh();  // schedule next refresh
+    } catch (e) {
+      console.warn('[Auth] Silent refresh failed — re-login required.');
+      clear();
+      showAuthOverlay();
+      toast('Session expired. Please sign in again.', 'error');
+    }
+  }
+
+  return { set, clear, getAccess, getRefresh, getUser, isAuthenticated, silentRefresh };
+})();
+
+// ─────────────────────────────────────────────────────────────────────────────
+// AUTHENTICATED FETCH WRAPPER
+// Automatically attaches the Bearer token and handles 401/429 responses.
+// ─────────────────────────────────────────────────────────────────────────────
+async function apiFetch(path, options = {}) {
+  const token = TokenStore.getAccess();
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+    ...(options.headers || {}),
+  };
+
+  const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+
+  if (res.status === 401) {
+    // Try a silent refresh and retry once
+    await TokenStore.silentRefresh();
+    const retryToken = TokenStore.getAccess();
+    if (!retryToken) {
+      showAuthOverlay();
+      throw new Error('Authentication required.');
+    }
+    return fetch(`${API_BASE}${path}`, {
+      ...options,
+      headers: { ...headers, 'Authorization': `Bearer ${retryToken}` },
+    });
+  }
+
+  if (res.status === 429) {
+    const data = await res.json().catch(() => ({}));
+    const retryAfter = data.retry_after_seconds || 60;
+    showRateLimitBadge(retryAfter);
+    throw new Error(`Rate limited. Try again in ${retryAfter}s.`);
+  }
+
+  return res;
+}
+
+function showRateLimitBadge(seconds) {
+  const badge = document.getElementById('rateBadge');
+  badge.classList.add('visible');
+  badge.textContent = `⚡ Rate limited — ${seconds}s`;
+  setTimeout(() => badge.classList.remove('visible'), seconds * 1000);
+  toast(`Too many requests. Please wait ${seconds} seconds.`, 'error');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// APP STATE
+// ─────────────────────────────────────────────────────────────────────────────
 let state = {
   activeType: 'stock',
   activeAsset: null,
@@ -792,20 +1179,196 @@ let state = {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// INIT
+// BOOT
 // ─────────────────────────────────────────────────────────────────────────────
 async function init() {
   updateClock();
   setInterval(updateClock, 1000);
-  renderWatchlist();
-  loadMarketOverview();
-  setInterval(refreshTicker, 120000); // refresh ticker every 2 min
+  // Always start with auth overlay — tokens aren't persisted
+  showAuthOverlay();
 }
 
 function updateClock() {
   const now = new Date();
   document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', { hour12: false });
   document.getElementById('date-display').textContent = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// AUTH MODAL
+// ─────────────────────────────────────────────────────────────────────────────
+function showAuthOverlay() {
+  document.getElementById('authOverlay').classList.remove('hidden');
+  document.getElementById('mainTopbar').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'none';
+}
+
+function hideAuthOverlay() {
+  document.getElementById('authOverlay').classList.add('hidden');
+  document.getElementById('mainTopbar').style.display = 'flex';
+  document.getElementById('mainApp').style.display = 'grid';
+}
+
+function switchAuthTab(tab) {
+  document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');
+  document.getElementById('registerForm').classList.toggle('hidden', tab !== 'register');
+  document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+  document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
+  document.getElementById('loginError').classList.remove('visible');
+  document.getElementById('registerError').classList.remove('visible');
+}
+
+function showAuthError(formType, msg) {
+  const el = document.getElementById(`${formType}Error`);
+  el.textContent = msg;
+  el.classList.add('visible');
+}
+
+async function submitLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  if (!email || !password) return showAuthError('login', 'Please fill in all fields.');
+
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true;
+  btn.classList.add('loading');
+  btn.textContent = '  Signing in...';
+  document.getElementById('loginError').classList.remove('visible');
+
+  try {
+    const res = await fetch(`${API_BASE}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      showAuthError('login', data.detail || 'Login failed. Check your credentials.');
+      return;
+    }
+
+    // Fetch user profile
+    const meRes = await fetch(`${API_BASE}/auth/me`, {
+      headers: { 'Authorization': `Bearer ${data.access_token}` },
+    });
+    const userData = await meRes.json();
+
+    TokenStore.set(data.access_token, data.refresh_token, userData);
+    onAuthSuccess(userData);
+
+  } catch (e) {
+    showAuthError('login', 'Cannot connect to server. Is the backend running?');
+  } finally {
+    btn.disabled = false;
+    btn.classList.remove('loading');
+    btn.textContent = '▶ Sign In';
+  }
+}
+
+async function submitRegister() {
+  const email = document.getElementById('regEmail').value.trim();
+  const username = document.getElementById('regUsername').value.trim();
+  const password = document.getElementById('regPassword').value;
+
+  if (!email || !username || !password) return showAuthError('register', 'Please fill in all fields.');
+
+  const btn = document.getElementById('registerBtn');
+  btn.disabled = true;
+  btn.classList.add('loading');
+  btn.textContent = '  Creating account...';
+  document.getElementById('registerError').classList.remove('visible');
+
+  try {
+    const res = await fetch(`${API_BASE}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, username, password }),
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      const msg = Array.isArray(data.detail)
+        ? data.detail.map(e => e.msg).join(' ')
+        : (data.detail || 'Registration failed.');
+      showAuthError('register', msg);
+      return;
+    }
+
+    // Fetch user profile
+    const meRes = await fetch(`${API_BASE}/auth/me`, {
+      headers: { 'Authorization': `Bearer ${data.access_token}` },
+    });
+    const userData = await meRes.json();
+
+    TokenStore.set(data.access_token, data.refresh_token, userData);
+    onAuthSuccess(userData);
+    toast('Account created! Welcome to QuantAI.', 'success');
+
+  } catch (e) {
+    showAuthError('register', 'Cannot connect to server. Is the backend running?');
+  } finally {
+    btn.disabled = false;
+    btn.classList.remove('loading');
+    btn.textContent = '◈ Create Account';
+  }
+}
+
+function onAuthSuccess(user) {
+  hideAuthOverlay();
+
+  // Populate user menu
+  const initials = (user.username || user.email || 'U').slice(0, 2).toUpperCase();
+  document.getElementById('userAvatar').textContent = initials;
+  document.getElementById('userEmailDisplay').textContent = user.email || '';
+  document.getElementById('ddUsername').textContent = user.username || user.email;
+  document.getElementById('ddRole').textContent = user.role || 'user';
+
+  // Boot the app
+  renderWatchlist();
+  loadMarketOverview();
+  setInterval(refreshTicker, 120000);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// USER DROPDOWN
+// ─────────────────────────────────────────────────────────────────────────────
+function toggleUserDropdown() {
+  document.getElementById('userDropdown').classList.toggle('open');
+}
+function closeDropdown() {
+  document.getElementById('userDropdown').classList.remove('open');
+}
+document.addEventListener('click', (e) => {
+  if (!document.getElementById('userMenu')?.contains(e.target)) closeDropdown();
+});
+
+async function logout() {
+  closeDropdown();
+  const refreshToken = TokenStore.getRefresh();
+  if (refreshToken) {
+    try {
+      await apiFetch('/auth/logout', {
+        method: 'POST',
+        body: JSON.stringify({ refresh_token: refreshToken }),
+      });
+    } catch (e) { /* silently ignore — clear local state regardless */ }
+  }
+  TokenStore.clear();
+  toast('Signed out.', 'success');
+  showAuthOverlay();
+}
+
+async function logoutAll() {
+  closeDropdown();
+  try {
+    await apiFetch('/auth/logout-all', { method: 'POST' });
+    toast('Signed out from all devices.', 'success');
+  } catch (e) {
+    toast('Error signing out from all devices.', 'error');
+  }
+  TokenStore.clear();
+  showAuthOverlay();
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -859,7 +1422,7 @@ function handleSearch() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ANALYZE ASSET
+// ANALYZE ASSET  (protected — requires auth token)
 // ─────────────────────────────────────────────────────────────────────────────
 async function analyzeAsset(symbol, type) {
   state.activeAsset = symbol;
@@ -870,21 +1433,24 @@ async function analyzeAsset(symbol, type) {
   content.innerHTML = `<div class="loading-wrap"><div class="loader"></div><span>Fetching ${symbol.toUpperCase()}...</span></div>`;
 
   try {
-    const res = await fetch(`${API_BASE}/api/quick-analyze`, {
+    const res = await apiFetch('/api/quick-analyze', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ symbol, asset_type: type }),
     });
-    
-    if (!res.ok) throw new Error('API error');
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || 'API error');
+    }
     const data = await res.json();
     renderAsset(data, type);
   } catch (e) {
+    if (e.message === 'Authentication required.') return;
     content.innerHTML = `
       <div class="empty-state">
         <div class="empty-icon" style="opacity:0.5">⚠</div>
-        <div class="empty-title">Connection Error</div>
-        <div class="empty-sub">Could not connect to the backend. Make sure the Python server is running at ${API_BASE}.<br><br><code>cd backend && uvicorn main:app --reload</code></div>
+        <div class="empty-title">Error</div>
+        <div class="empty-sub">${e.message || 'Could not fetch data. Make sure the backend is running.'}</div>
       </div>`;
   }
 }
@@ -902,7 +1468,7 @@ function renderAsset(data, type) {
     return;
   }
 
-  const price = type === 'stock' ? asset.current_price : asset.current_price;
+  const price = asset.current_price;
   const change1d = type === 'stock' ? asset.change_1d_pct : asset.change_24h;
   const change7d = type === 'stock' ? asset.change_1w_pct : asset.change_7d;
   const change30d = type === 'stock' ? asset.change_1m_pct : asset.change_30d;
@@ -911,8 +1477,6 @@ function renderAsset(data, type) {
   const predSignal = pred?.prediction || 'N/A';
   const predClass = predSignal.includes('BUY') ? 'buy' : predSignal.includes('SELL') ? 'sell' : 'hold';
 
-  // Update watchlist price
-  const symKey = asset.symbol || asset.name;
   const wlPrice = document.getElementById(`wl-price-${state.activeAsset}`);
   const wlChg = document.getElementById(`wl-chg-${state.activeAsset}`);
   if (wlPrice) wlPrice.textContent = formatPrice(price);
@@ -957,7 +1521,6 @@ function renderAsset(data, type) {
   }).join('') : '';
 
   document.getElementById('analyzeContent').innerHTML = `
-    <!-- Hero -->
     <div class="panel">
       <div class="asset-hero">
         <div>
@@ -976,71 +1539,48 @@ function renderAsset(data, type) {
           <div class="pred-confidence">${pred.confidence}% confidence</div>
           <div class="pred-target">Target: <span class="tp">$${formatPrice(pred.target_price)}</span></div>
           <div style="font-size:10px;color:var(--text-dim);margin-top:4px">${pred.timeframe}</div>
-        </div>
-        ` : ''}
+        </div>` : ''}
       </div>
     </div>
-
-    <!-- Chart -->
     <div class="panel">
       <div class="panel-header">
         <span class="panel-title">Price Chart</span>
-        <span style="font-size:10px;color:var(--text-dim)">60-day OHLCV</span>
+        <span style="font-size:10px;color:var(--text-dim)">60-day</span>
       </div>
-      <div class="chart-container">
-        <canvas id="priceChart"></canvas>
-      </div>
+      <div class="chart-container"><canvas id="priceChart"></canvas></div>
     </div>
-
-    <!-- Stats Grid -->
     <div class="panel">
       <div class="panel-header"><span class="panel-title">Market Data</span></div>
       <div class="stats-grid">${stats}</div>
     </div>
-
     ${pred ? `
-    <!-- Technical Indicators -->
     <div class="panel">
       <div class="panel-header"><span class="panel-title">Technical Indicators</span></div>
       <div class="stats-grid">${techStats}</div>
     </div>
-
-    <!-- Signals -->
     <div class="panel">
       <div class="panel-header">
         <span class="panel-title">AI Signals</span>
         <span style="font-size:10px;color:var(--text-dim)">Score: ${pred.score > 0 ? '+' : ''}${pred.score}</span>
       </div>
-      <div class="panel-body">
-        <div class="signals-list">${signalsHtml}</div>
-      </div>
-    </div>
-    ` : ''}
+      <div class="panel-body"><div class="signals-list">${signalsHtml}</div></div>
+    </div>` : ''}
   `;
 
-  // Draw chart
   renderChart(asset.chart_data, asset.symbol || asset.name);
 }
 
 function renderChart(chartData, symbol) {
-  if (!chartData || !chartData.length) return;
-  
+  if (!chartData?.length) return;
   const ctx = document.getElementById('priceChart');
   if (!ctx) return;
-
-  if (state.chartInstance) {
-    state.chartInstance.destroy();
-    state.chartInstance = null;
-  }
+  if (state.chartInstance) { state.chartInstance.destroy(); state.chartInstance = null; }
 
   const labels = chartData.map(d => d.date);
   const closes = chartData.map(d => d.close);
   const sma20s = chartData.map(d => d.sma20);
   const sma50s = chartData.map(d => d.sma50);
-
-  const firstClose = closes[0];
-  const lastClose = closes[closes.length - 1];
-  const isUp = lastClose >= firstClose;
+  const isUp = closes[closes.length-1] >= closes[0];
   const lineColor = isUp ? '#00ff9d' : '#ff3d57';
 
   state.chartInstance = new Chart(ctx, {
@@ -1048,78 +1588,39 @@ function renderChart(chartData, symbol) {
     data: {
       labels,
       datasets: [
-        {
-          label: symbol,
-          data: closes,
-          borderColor: lineColor,
-          backgroundColor: `${lineColor}10`,
-          borderWidth: 2,
-          pointRadius: 0,
-          fill: true,
-          tension: 0.3,
-        },
-        {
-          label: 'SMA20',
-          data: sma20s,
-          borderColor: '#00d4ff',
-          borderWidth: 1,
-          pointRadius: 0,
-          fill: false,
-          tension: 0.3,
-          borderDash: [4, 4],
-        },
-        {
-          label: 'SMA50',
-          data: sma50s,
-          borderColor: '#ff6b35',
-          borderWidth: 1,
-          pointRadius: 0,
-          fill: false,
-          tension: 0.3,
-          borderDash: [8, 4],
-        },
+        { label: symbol, data: closes, borderColor: lineColor, backgroundColor: `${lineColor}10`,
+          borderWidth: 2, pointRadius: 0, fill: true, tension: 0.3 },
+        { label: 'SMA20', data: sma20s, borderColor: '#00d4ff', borderWidth: 1,
+          pointRadius: 0, fill: false, tension: 0.3, borderDash: [4,4] },
+        { label: 'SMA50', data: sma50s, borderColor: '#ff6b35', borderWidth: 1,
+          pointRadius: 0, fill: false, tension: 0.3, borderDash: [8,4] },
       ]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
       plugins: {
-        legend: {
-          labels: { color: '#4a6a85', font: { family: 'Space Mono', size: 10 } }
-        },
+        legend: { labels: { color: '#4a6a85', font: { family: 'Space Mono', size: 10 } } },
         tooltip: {
-          backgroundColor: '#0e1825',
-          borderColor: '#1a2d42',
-          borderWidth: 1,
-          titleColor: '#00d4ff',
-          bodyColor: '#c8dff0',
+          backgroundColor: '#0e1825', borderColor: '#1a2d42', borderWidth: 1,
+          titleColor: '#00d4ff', bodyColor: '#c8dff0',
           titleFont: { family: 'Space Mono', size: 10 },
           bodyFont: { family: 'Space Mono', size: 11 },
-          callbacks: {
-            label: ctx => ` $${ctx.parsed.y?.toFixed(2) || '--'}`,
-          }
+          callbacks: { label: ctx => ` $${ctx.parsed.y?.toFixed(2) || '--'}` }
         }
       },
       scales: {
-        x: {
-          ticks: { color: '#4a6a85', font: { family: 'Space Mono', size: 9 }, maxTicksLimit: 8 },
-          grid: { color: '#0e1825', lineWidth: 1 },
-          border: { color: '#1a2d42' },
-        },
-        y: {
-          position: 'right',
-          ticks: { color: '#4a6a85', font: { family: 'Space Mono', size: 9 }, callback: v => `$${v.toFixed(2)}` },
-          grid: { color: '#0e1825' },
-          border: { color: '#1a2d42' },
-        }
+        x: { ticks: { color: '#4a6a85', font: { family: 'Space Mono', size: 9 }, maxTicksLimit: 8 },
+             grid: { color: '#0e1825' }, border: { color: '#1a2d42' } },
+        y: { position: 'right', ticks: { color: '#4a6a85', font: { family: 'Space Mono', size: 9 },
+             callback: v => `$${v.toFixed(2)}` }, grid: { color: '#0e1825' }, border: { color: '#1a2d42' } }
       }
     }
   });
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// MARKET OVERVIEW
+// MARKET OVERVIEW  (public — no auth required for ticker tape)
 // ─────────────────────────────────────────────────────────────────────────────
 async function loadMarketOverview() {
   try {
@@ -1143,9 +1644,7 @@ function renderIndicesSidebar(indices) {
   const el = document.getElementById('indicesEl');
   el.innerHTML = indices.map(i => `
     <div class="watchlist-item">
-      <div class="wl-left">
-        <span class="wl-sym" style="font-size:11px">${i.name}</span>
-      </div>
+      <div class="wl-left"><span class="wl-sym" style="font-size:11px">${i.name}</span></div>
       <div class="wl-right">
         <div class="wl-price">${i.price.toLocaleString()}</div>
         <div class="wl-chg ${i.change_pct >= 0 ? 'pos' : 'neg'}">${i.change_pct >= 0 ? '+' : ''}${i.change_pct}%</div>
@@ -1155,7 +1654,6 @@ function renderIndicesSidebar(indices) {
 }
 
 function updateTicker(data) {
-  // Update ticker tape with live crypto data
   if (data.top_cryptos) {
     data.top_cryptos.forEach(c => {
       const el = document.getElementById(`t-${c.symbol}`);
@@ -1178,39 +1676,31 @@ function renderMarketOverview(data) {
       <div class="mc-name">${i.name}</div>
       <div class="mc-price">${i.price.toLocaleString()}</div>
       <div class="mc-change ${i.change_pct >= 0 ? 'pos' : 'neg'}">${i.change_pct >= 0 ? '▲' : '▼'} ${Math.abs(i.change_pct)}%</div>
-    </div>
-  `).join('');
+    </div>`).join('');
 
   const cryptoHtml = (data.top_cryptos || []).map(c => `
     <div class="market-card" onclick="analyzeAsset('${c.id}','crypto')">
       <div class="mc-name">${c.name} <span style="color:var(--accent);font-size:9px">${c.symbol}</span></div>
       <div class="mc-price">${formatPrice(c.price)}</div>
       <div class="mc-change ${c.change_24h >= 0 ? 'pos' : 'neg'}">${c.change_24h >= 0 ? '▲' : '▼'} ${Math.abs(c.change_24h)}%</div>
-    </div>
-  `).join('');
+    </div>`).join('');
 
   document.getElementById('marketContent').innerHTML = `
     <div class="panel">
       <div class="panel-header"><span class="panel-title">Major Indices</span><span style="font-size:10px;color:var(--text-dim)">${data.timestamp ? new Date(data.timestamp).toLocaleTimeString() : ''}</span></div>
-      <div class="panel-body">
-        <div class="market-grid">${indicesHtml}</div>
-      </div>
+      <div class="panel-body"><div class="market-grid">${indicesHtml}</div></div>
     </div>
     <div class="panel">
       <div class="panel-header"><span class="panel-title">Top Cryptocurrencies</span><span style="font-size:10px;color:var(--text-dim)">Click to analyze</span></div>
-      <div class="panel-body">
-        <div class="market-grid">${cryptoHtml}</div>
-      </div>
+      <div class="panel-body"><div class="market-grid">${cryptoHtml}</div></div>
     </div>
   `;
 }
 
-function refreshTicker() {
-  loadMarketOverview();
-}
+function refreshTicker() { loadMarketOverview(); }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// CHAT
+// CHAT  (protected)
 // ─────────────────────────────────────────────────────────────────────────────
 async function sendChat() {
   const input = document.getElementById('chatInput');
@@ -1220,31 +1710,26 @@ async function sendChat() {
   const btn = document.getElementById('sendBtn');
   input.value = '';
   input.style.height = 'auto';
-
   appendChatMsg('user', msg);
   btn.disabled = true;
 
-  // Thinking indicator
   const thinkId = appendChatMsg('ai', '<span class="blink">▋</span> Analyzing...');
 
   try {
-    const res = await fetch(`${API_BASE}/api/chat`, {
+    const res = await apiFetch('/api/chat', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: msg, history: state.chatHistory }),
     });
-    
+
     const data = await res.json();
     const reply = data.message || 'Analysis complete.';
-    
-    // Update thinking bubble with real response
+
     const thinkEl = document.getElementById(thinkId);
     if (thinkEl) thinkEl.innerHTML = formatChatMsg(reply);
 
     state.chatHistory.push({ role: 'user', content: msg });
     state.chatHistory.push({ role: 'assistant', content: reply });
 
-    // If there's asset data, offer to view it
     if (data.asset_data && data.data_type !== 'chat') {
       const viewBtn = document.createElement('div');
       viewBtn.style.cssText = 'margin-top:8px;';
@@ -1252,10 +1737,9 @@ async function sendChat() {
       const el = document.getElementById(thinkId);
       if (el) el.appendChild(viewBtn);
     }
-
   } catch (e) {
     const thinkEl = document.getElementById(thinkId);
-    if (thinkEl) thinkEl.innerHTML = `<span style="color:var(--red)">⚠ Backend not reachable. Make sure the server is running.</span>`;
+    if (thinkEl) thinkEl.innerHTML = `<span style="color:var(--red)">⚠ ${e.message || 'Error contacting server.'}</span>`;
   }
 
   btn.disabled = false;
@@ -1299,35 +1783,33 @@ function formatPrice(v) {
   if (v < 1) return v.toFixed(4);
   return v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
-
 function formatNum(v) {
   if (v == null) return '--';
-  if (v >= 1e9) return (v / 1e9).toFixed(2) + 'B';
-  if (v >= 1e6) return (v / 1e6).toFixed(2) + 'M';
-  if (v >= 1e3) return (v / 1e3).toFixed(1) + 'K';
+  if (v >= 1e9) return (v/1e9).toFixed(2)+'B';
+  if (v >= 1e6) return (v/1e6).toFixed(2)+'M';
+  if (v >= 1e3) return (v/1e3).toFixed(1)+'K';
   return v.toLocaleString();
 }
-
 function formatLarge(v) {
   if (v == null) return '--';
-  if (v >= 1e12) return '$' + (v / 1e12).toFixed(2) + 'T';
-  if (v >= 1e9) return '$' + (v / 1e9).toFixed(2) + 'B';
-  if (v >= 1e6) return '$' + (v / 1e6).toFixed(2) + 'M';
-  return '$' + v.toLocaleString();
+  if (v >= 1e12) return '$'+(v/1e12).toFixed(2)+'T';
+  if (v >= 1e9) return '$'+(v/1e9).toFixed(2)+'B';
+  if (v >= 1e6) return '$'+(v/1e6).toFixed(2)+'M';
+  return '$'+v.toLocaleString();
 }
-
 function toast(msg, type = 'info') {
   const el = document.createElement('div');
   el.className = `toast ${type}`;
   el.textContent = msg;
   document.body.appendChild(el);
-  setTimeout(() => el.remove(), 3000);
+  setTimeout(() => el.remove(), 3500);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // BOOT
 // ─────────────────────────────────────────────────────────────────────────────
 init();
+
 </script>
 </body>
 </html>

@@ -12,3 +12,8 @@ httpx
 pandas
 numpy
 ta
+slowapi
+bcrypt
+python-jose[cryptography]
+aiosqlite
+pydantic[email]
