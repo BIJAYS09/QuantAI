@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+langchain
+langchain-openai
+langgraph
+langchain-community
+yfinance
+requests
+python-dotenv
+pydantic
+httpx
+pandas
+numpy
+ta
