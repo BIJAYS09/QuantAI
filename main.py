@@ -24,6 +24,7 @@ from pydantic import BaseModel
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
+import redis
 
 # LangChain / LangGraph
 from langchain_openai import ChatOpenAI
@@ -48,6 +49,50 @@ logging.basicConfig(
     level=logging.DEBUG if settings.debug else logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s — %(message)s",
 )
+
+# ─────────────────────────────────────────────────────────────────────────────
+# REDIS CACHE (optional)
+# ─────────────────────────────────────────────────────────────────────────────
+# Most market endpoints are safe to cache for a short duration to avoid
+# CoinGecko / yfinance rate limits.  Use Redis if REDIS_URL is configured.
+redis_client: redis.Redis | None = None
+
+def get_redis() -> redis.Redis | None:
+    """Lazily initialize and return a redis client, or None on failure."""
+    global redis_client
+    if redis_client is not None:
+        return redis_client
+    try:
+        url = settings.redis_url
+        if not url:
+            return None
+        redis_client = redis.from_url(url, decode_responses=True)
+        logger.info(f"[Cache] connected to Redis: {url}")
+    except Exception as e:
+        logger.warning(f"[Cache] unable to connect to Redis: {e}")
+        redis_client = None
+    return redis_client
+
+
+def cache_get(key: str) -> str | None:
+    r = get_redis()
+    if not r:
+        return None
+    try:
+        return r.get(key)
+    except Exception:
+        return None
+
+
+def cache_set(key: str, value: str, ex: int = 60) -> None:
+    r = get_redis()
+    if not r:
+        return
+    try:
+        r.set(key, value, ex=ex)
+    except Exception:
+        pass
+
 logger = logging.getLogger(__name__)
 
 
@@ -164,6 +209,12 @@ def get_crypto_data(coin_id: str) -> str:
     Args:
         coin_id: CoinGecko coin ID like bitcoin, ethereum, solana, cardano
     """
+    key = f"crypto:{coin_id.lower()}"
+    # try cache first
+    cached = cache_get(key)
+    if cached:
+        return cached
+
     try:
         resp = requests.get(f"https://api.coingecko.com/api/v3/coins/{coin_id.lower()}",
             params={"localization": False, "tickers": False, "market_data": True,
@@ -181,7 +232,7 @@ def get_crypto_data(coin_id: str) -> str:
             for ts, price in chart_resp.json().get("prices", [])
         ]
 
-        return json.dumps({
+        result = json.dumps({
             "symbol": data.get("symbol", "").upper(), "name": data.get("name", coin_id),
             "current_price": md.get("current_price", {}).get("usd"),
             "market_cap": md.get("market_cap", {}).get("usd"),
@@ -196,6 +247,8 @@ def get_crypto_data(coin_id: str) -> str:
             "description": data.get("description", {}).get("en", "")[:500],
             "chart_data": chart_data,
         })
+        cache_set(key, result, ex=60)  # cache 1 minute
+        return result
     except Exception as e:
         logger.error(f"[Tool:get_crypto_data] {e}")
         return json.dumps({"error": str(e)})
@@ -204,6 +257,11 @@ def get_crypto_data(coin_id: str) -> str:
 @tool
 def get_market_overview() -> str:
     """Get an overview of major market indices and top crypto prices."""
+    cache_key = "market_overview"
+    cached = cache_get(cache_key)
+    if cached:
+        return cached
+
     try:
         indices = {"^GSPC": "S&P 500", "^IXIC": "NASDAQ", "^DJI": "Dow Jones", "^VIX": "VIX"}
         result_indices = []
@@ -224,7 +282,7 @@ def get_market_overview() -> str:
             params={"vs_currency": "usd", "order": "market_cap_desc", "per_page": 5,
                     "page": 1, "price_change_percentage": "24h"}, timeout=10)
 
-        return json.dumps({
+        result = json.dumps({
             "indices": result_indices,
             "top_cryptos": [{
                 "id": c["id"], "symbol": c["symbol"].upper(), "name": c["name"],
@@ -234,6 +292,8 @@ def get_market_overview() -> str:
             } for c in crypto_resp.json()],
             "timestamp": datetime.now().isoformat(),
         })
+        cache_set(cache_key, result, ex=30)
+        return result
     except Exception as e:
         logger.error(f"[Tool:get_market_overview] {e}")
         return json.dumps({"error": str(e)})

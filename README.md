@@ -17,7 +17,7 @@ stock-predictor/
 ## Features
 
 - 📈 **Real-time stock data** via `yfinance` (OHLCV, 60-day chart)
-- 🪙 **Crypto data** via CoinGecko free API (no key needed)
+- 🪙 **Crypto data** via CoinGecko free API (no key needed); optional Redis cache mitigates rate limits
 - 🤖 **LangGraph AI agent** with 4 tools:
   - `get_stock_data` — stock price, volume, technicals
   - `get_crypto_data` — crypto market data + history
@@ -30,6 +30,9 @@ stock-predictor/
 ## Setup
 
 ### 1. Backend
+
+> **Tip:** Set `REDIS_URL` to enable caching for CoinGecko/market endpoints. This greatly reduces rate-limit errors and speeds up responses.
+
 
 ```bash
 cd backend
