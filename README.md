@@ -19,6 +19,8 @@ stock-predictor/
 - 📈 **Real-time stock data** via `yfinance` (OHLCV, 60-day chart)
 - 🪙 **Crypto data** via CoinGecko free API (no key needed); optional Redis cache mitigates rate limits
 - 🤖 **LangGraph AI agent** with 4 tools:
+
+> **Code structure:** Logic is split into small modules (`tools.py`, `agent.py`, `cache.py`, `websocket.py`, `schemas.py`) with `main.py` serving only as the orchestrator.
   - `get_stock_data` — stock price, volume, technicals
   - `get_crypto_data` — crypto market data + history
   - `get_market_overview` — indices + top 5 cryptos

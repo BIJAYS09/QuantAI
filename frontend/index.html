@@ -1168,8 +1168,12 @@ const TokenStore = (() => {
     }
   }
 
-  return { set, clear, getAccess, getRefresh, getUser, isAuthenticated, silentRefresh };
+  return { set, clear, getAccess, getRefresh, getUser, isAuthenticated, silentRefresh,
+           onPriceUpdate, connectPriceStream, disconnectPriceStream };
 })();
+
+// make WS helpers available in global scope so other modules can call them directly
+const { onPriceUpdate, connectPriceStream, disconnectPriceStream } = TokenStore;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // AUTHENTICATED FETCH WRAPPER
