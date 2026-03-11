@@ -1,0 +1,80 @@
+:root {
+  --bg: #050a0f;
+  --bg2: #090f17;
+  --bg3: #0e1825;
+  --panel: #0c1520;
+  --border: #1a2d42;
+  --border-bright: #1e4060;
+  --accent: #00d4ff;
+  --accent2: #00ff9d;
+  --accent3: #ff6b35;
+  --warn: #ffbe00;
+  --danger: #ff3d57;
+  --text: #c8dff0;
+  --text-dim: #4a6a85;
+  --text-bright: #e8f4ff;
+  --green: #00ff9d;
+  --red: #ff3d57;
+  --mono: 'Space Mono', monospace;
+  --display: 'Syne', sans-serif;
+  --glow: 0 0 20px rgba(0, 212, 255, 0.15);
+  --glow-green: 0 0 20px rgba(0, 255, 157, 0.2);
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--mono);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Scanline effect */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 1000;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-bright);
+  border-radius: 2px;
+}
+
+#root {
+  height: 100vh;
+  overflow: hidden;
+}
